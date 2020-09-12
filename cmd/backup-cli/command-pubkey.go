@@ -23,4 +23,3 @@ func commandPubKey() int {
 	fmt.Println(base64.StdEncoding.EncodeToString(publicKey))
 	return 0
 }
-

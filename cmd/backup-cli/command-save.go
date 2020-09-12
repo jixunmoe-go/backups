@@ -58,4 +58,3 @@ func copyToFile(projectName string) int {
 	_ = f.Close()
 	return 0
 }
-
