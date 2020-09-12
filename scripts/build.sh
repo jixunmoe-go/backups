@@ -16,8 +16,18 @@ build() {
   fi
 
   NAME="backup-cli-${GOOS}-${GOARCH}${EXT}"
+  OUTPATH="${BINDIR}/${NAME}"
   echo "Building ${NAME}..."
-  go build -v -trimpath -ldflags '-w -s' -o "${BINDIR}/${NAME}" ./cmd/backup-cli
+  go build -trimpath -ldflags '-w -s' -o "${OUTPATH}" ./cmd/backup-cli
+
+  if [ "$PACK" = "1" ]; then
+    if [ "${GOOS}" = "windows" ]; then
+      zip -j "${OUTPATH}.zip" "${OUTPATH}"
+    else
+      tar -C "${BINDIR}" -zcvf "${OUTPATH}.tar.gz" "${NAME}"
+    fi
+    rm "${OUTPATH}"
+  fi
 }
 
 build windows amd64
