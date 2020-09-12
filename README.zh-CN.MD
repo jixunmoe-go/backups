@@ -52,10 +52,12 @@ $ cat priv pub
 s9OntFH589GQrHrztVDkdM7vwLFk85s1sDP3E7ez9qo=
 ZRVTaUl3qLMaBH+KOZWlhsIM52lPNteVx/qe+8pIPFo=
 $ echo 'hello!!' | backup-cli encrypt -pubkey "$(cat pub)" | tee c1.bin | xxd
-00000000: 4521 4a58 4490 5019 33a5 e421 3067 6f3e  E!JXD.P.3..!0go>
-00000010: 5487 29b6 2b20 fe71 9403 6a7f 0865 4e57  T.).+ .q..j..eNW
-00000020: 9f88 183a af84 97ca ee68 25c1 a111 5899  ...:.....h%...X.
-00000030: 464e 6c89 b42a 65e0 4760 8624            FNl..*e.G`.$
+00000000: 4521 4a58 c69c bf5e 22ae d5a3 f3a1 e1e4  E!JX...^".......
+00000010: 6884 9b20 114b 8975 5b59 f822 ffc6 0810  h.. .K.u[Y."....
+00000020: 6205 dd0f 7114 0a36 caf4 e9eb a12a 6200  b...q..6.....*b.
+00000030: 3cf9 f04f ff33 3fe2 9f46 5ea7 a4d6 1e50  <..O.3?..F^....P
+00000040: c631 ea97 1ce3 cb89 97f8 34d1 54eb c9e0  .1........4.T...
+00000050: 9f3d 6438 b64d f77a 976e 6f41            .=d8.M.z.noA
 $ cat c1.bin | backup-cli decrypt -privkey "$(cat priv)" | xxd
 00000000: 6865 6c6c 6f21 210a                      hello!!.
 ```
