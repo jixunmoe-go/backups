@@ -38,7 +38,7 @@ func loadArchive(projectName, time string) int {
 		archive = archives[0]
 	} else {
 		for _, a := range archives {
-			if strings.HasPrefix(a.Name, time) {
+			if strings.HasPrefix(a.FileName, time) {
 				archive = a
 				break
 			}
@@ -51,7 +51,7 @@ func loadArchive(projectName, time string) int {
 	}
 
 	rootDir := backup.GetBackupLocation(projectName)
-	f, err := os.OpenFile(path.Join(rootDir, archive.Name), os.O_RDONLY, 0600)
+	f, err := os.OpenFile(path.Join(rootDir, archive.FileName), os.O_RDONLY, 0600)
 	if err != nil {
 		println("could not open backup.")
 		return 4

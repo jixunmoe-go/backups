@@ -38,7 +38,7 @@ func listArchive(projectName string) int {
 	fmt.Printf("%d version(s) available\n", len(archives))
 
 	for i, a := range archives {
-		fmt.Printf(" %2d. %s\n", i+1, a.Name)
+		fmt.Printf(" %2d. %s\n", i+1, a.FileName)
 	}
 	return 0
 }

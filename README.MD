@@ -56,4 +56,4 @@ $ tar zcv /my-backup | ssh backup@example.com -- 'backup-cli save -name b1/daily
 - [x] Command to list backup `backup-cli list [-name <name>]`
 - [x] Some verification mechanism; e.g. generate checksum before the upload.
   - Checksum will be generated on encrypt & verified when decrypting.
-  - [ ] Add `verify` command (specific project / version or all)
+  - [x] Add `verify` command (specific project / version or all)

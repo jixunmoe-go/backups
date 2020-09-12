@@ -30,6 +30,8 @@ func handleCommand(argv []string) int {
 		return commandLoad(argv[2:])
 	case "list":
 		return commandList(argv[2:])
+	case "verify":
+		return commandVerify(argv[2:])
 	}
 
 	println("Unknown command " + argv[1] + ".")
@@ -55,4 +57,5 @@ func printHelp() {
 	println(" save     Save content received from stdin to a specified location.")
 	println(" load     Load content stored in the backup server.")
 	println(" list     List backup projects, or versions of a given backup project.")
+	println(" verify   Verify all or a specific project/version, that is ")
 }

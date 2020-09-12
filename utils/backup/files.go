@@ -2,6 +2,7 @@ package backup
 
 import (
 	"io/ioutil"
+	"path"
 	"regexp"
 	"sort"
 	"strconv"
@@ -10,20 +11,26 @@ import (
 var reFileName = regexp.MustCompile(`^(\d+)\.bin$`)
 
 type ArchiveInfo struct {
-	Name string
-	Time uint64
+	FileName string
+	Time     uint64
+	Project  string
 }
 
-func createArchiveFromName(name string) *ArchiveInfo {
+func createArchiveFromName(project, name string) *ArchiveInfo {
 	m := reFileName.FindStringSubmatch(name)
 	ts, err := strconv.ParseUint(m[1], 10, 64)
 	if err != nil {
 		return nil
 	}
 	return &ArchiveInfo{
-		Name: name,
-		Time: ts,
+		FileName: name,
+		Time:     ts,
+		Project:  project,
 	}
+}
+
+func (a *ArchiveInfo) GetPath() string {
+	return path.Join(GetBackupLocation(a.Project), a.FileName)
 }
 
 func GetBackupProjects() []string {
@@ -53,7 +60,7 @@ func GetBackupArchives(name string) []*ArchiveInfo {
 
 	for _, v := range s {
 		if !v.IsDir() {
-			archive := createArchiveFromName(v.Name())
+			archive := createArchiveFromName(name, v.Name())
 
 			if archive != nil {
 				archives = append(archives, archive)
