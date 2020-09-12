@@ -1,9 +1,29 @@
 package main
 
 import (
-	"fmt"
+	"github.com/google/shlex"
 	"os"
 )
+
+const appName = "backup-cli"
+
+var fromSSHShell = false
+
+var sshOnlyCommands = []string{
+	"save",
+	"load",
+	"list",
+	"verify",
+}
+
+func contains(list []string, handle string) bool {
+	for _, s := range list {
+		if s == handle {
+			return true
+		}
+	}
+	return false
+}
 
 func main() {
 	os.Exit(handleCommand(os.Args))
@@ -15,7 +35,15 @@ func handleCommand(argv []string) int {
 		return 1
 	}
 
-	switch argv[1] {
+	command := argv[1]
+	if fromSSHShell && !contains(sshOnlyCommands, command) {
+		println("command '" + command + "' is not allowed over ssh.")
+		return 1
+	}
+
+	switch command {
+	case "ssh":
+		return commandSSH()
 	case "gen":
 		return commandGenerate()
 	case "pubkey":
@@ -34,16 +62,38 @@ func handleCommand(argv []string) int {
 		return commandVerify(argv[2:])
 	}
 
-	println("Unknown command " + argv[1] + ".")
+	println("Unknown command " + command + ".")
 	println("")
 	printHelp()
 
 	return 9
 }
 
+func commandSSH() int {
+	fromSSHShell = true
+
+	// Safe SSH command line parsing!
+	sshCommand := os.Getenv("SSH_ORIGINAL_COMMAND")
+	if sshCommand == "" {
+		println("$SSH_ORIGINAL_COMMAND is empty.")
+		return 1
+	}
+
+	args, err := shlex.Split(sshCommand)
+	if err != nil {
+		println("could not parse $SSH_ORIGINAL_COMMAND: " + err.Error())
+		return 2
+	}
+
+	return handleCommand(append([]string{appName}, args...))
+}
+
 func printHelp() {
-	println(fmt.Sprintf("usage: %s <command> [<args>]", os.Args[0]))
+	println("usage: " + appName + " <command> [<args>]")
 	println("Commands available: ")
+	println("")
+	println("SSH Execution")
+	println(" ssh      Use '" + appName + " ssh' as forced command.")
 	println("")
 	println("Key related")
 	println(" gen      Generate a private key.")
@@ -57,5 +107,5 @@ func printHelp() {
 	println(" save     Save content received from stdin to a specified location.")
 	println(" load     Load content stored in the backup server.")
 	println(" list     List backup projects, or versions of a given backup project.")
-	println(" verify   Verify all or a specific project/version, that is ")
+	println(" verify   Verify all or a specific project/version.")
 }

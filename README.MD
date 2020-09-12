@@ -23,11 +23,23 @@ Standard AES (256-bit) Encryption in OFB mode.
 $ backup-cli
 usage: backup-cli <command> [<args>]
 Commands available: 
+
+SSH Execution
+ ssh      Use 'backup-cli ssh' as forced command.
+
+Key related
  gen      Generate a private key.
- pubkey   Get public key from a given private key. 
+ pubkey   Get public key from a given private key.
+
+Encryption
  encrypt  Encrypt bytes from stdin (with pubkey) and write to stdout.
  decrypt  Decrypt bytes from stdin (with privkey) and write to stdout.
+
+Backup management
  save     Save content received from stdin to a specified location.
+ load     Load content stored in the backup server.
+ list     List backup projects, or versions of a given backup project.
+ verify   Verify all or a specific project/version.
 ```
 
 ## Usage
@@ -44,8 +56,55 @@ $ echo 'hello!!' | backup-cli encrypt -pubkey "$(cat pub)" | tee c1.bin | xxd
 00000030: 464e 6c89 b42a 65e0 4760 8624            FNl..*e.G`.$
 $ cat c1.bin | backup-cli decrypt -privkey "$(cat priv)" | xxd
 00000000: 6865 6c6c 6f21 210a                      hello!!.
-$ # now upload to somewhere...
-$ tar zcv /my-backup | ssh backup@example.com -- 'backup-cli save -name b1/daily'
+```
+
+### Access over SSH
+
+Note: It is recommended to set `backup-cli` as the shell for backups,
+  so the user will not have the actual shell or `sftp` access.
+
+In `~/.ssh/authorized_keys`, one can specify `backup-cli` as a shell
+  to access a restricted set of commands:
+
+```text
+command="/path/to/backup-cli ssh" ssh-rsa ...
+```
+
+Then to upload the archive to a remote site, pipe it via `ssh`:
+
+```shell script
+# upload backup to somewhere...
+
+tar zcv /my-backup | ssh backup@example.com -- save -name backup1-daily
+```
+
+### Commands allowed when set as SSH Shell
+
+Only limited command will be supported over ssh command
+  (parsed via `$SSH_ORIGINAL_COMMAND`), and those are:
+
+* Backup Management
+  * `save`
+  * `load`
+  * `list`
+  * `verify`
+
+To access the full command set (not recommend),
+  call `backup-cli` directly from a shell over ssh. 
+
+### Invoke from SSH without set as a shell
+
+```shell script
+tar zcv /my-backup | ssh backup@example.com -- backup-cli save -name backup1-daily
+```
+
+### Add checksum to an existing file
+
+```shell script
+sha256sum /path/to/file | head -c 64 | xxd -r -p > /path/to/file.sha256
+
+# To upload with the checksum
+cat /path/to/file /path/to/file.sha256 | ssh backup@example.com -- backup-cli save -name backup1-daily
 ```
 
 ## TODO
