@@ -1,26 +1,25 @@
 Backups
 =======
 
-README: **English** | [简体中文][README_CN]
+README: [English][README_EN] | **简体中文**
 
-A set of cli tools to help backup.
+一套用于辅助备份的命令行工具。
 
-## Encryption
+## 加密
 
-Standard AES (256-bit) Encryption in OFB mode.
+标准 AES (256-bit) 加密，OFB 模式。
 
-### Encrypted file structure
+### 加密文件结构
 
 | name       | bytes | comment                                      |
 | :--------- | :---- | :------------------------------------------- |
-| header     |  `4`  | `E!JX`, fixed 4 bytes.                       |
-| public key |  `32` | A randomly generated `curve25519` public key |
-| iv         |  `16` | Randomly generated iv values.                |
-| data       |  `?`  | AES Encrypted data until the end.            |
-| sha256     |  `64` | The `sha256` hash of all bytes above.        |
+| header     |  `4`  | `E!JX`, 固定的 4 字节内容。                     |
+| public key |  `32` | 一个随机生成的 `curve25519` 公钥。               |
+| iv         |  `16` | 随机生成的 IV （初始向量）值。                    |
+| data       |  `?`  | AES 加密后的数据，直到结尾。                      |
+| sha256     |  `64` | 从第一个字节直到该域前的所有字节内容的 `sha256` 哈希。|
 
-
-## Features
+## 特性
 
 ```
 $ backup-cli
@@ -45,7 +44,7 @@ Backup management
  verify   Verify all or a specific project/version.
 ```
 
-## Usage
+## 使用示例
 
 ```
 $ backup-cli gen | tee priv | backup-cli pubkey > pub
@@ -61,64 +60,57 @@ $ cat c1.bin | backup-cli decrypt -privkey "$(cat priv)" | xxd
 00000000: 6865 6c6c 6f21 210a                      hello!!.
 ```
 
-### Access over SSH
+### 通过 SSH 访问
 
-Note: It is recommended to set `backup-cli` as the shell for backups,
-  so the user will not have the actual shell or `sftp` access.
+注意：推荐将 `backup-cli` 设定为连接的 shell；这样用户就不能获得
+  任意代码执行权限以及 `sftp` 权限。
 
-In `~/.ssh/authorized_keys`, one can specify `backup-cli` as a shell
-  to access a restricted set of commands:
+在 `~/.ssh/authorized_keys`, 管理员可以将 `backup-cli` 设定为强制的 shell:
 
 ```text
 command="/path/to/backup-cli ssh" ssh-rsa ...
 ```
 
-Then to upload the archive to a remote site, pipe it via `ssh`:
+要上传备份包到远端服务器，通过管道经由 `ssh` 上传： 
 
 ```shell script
-# upload backup to somewhere...
+# 上传备份到某处…
 
 tar zcv /my-backup | ssh backup@example.com -- save -name backup1-daily
 ```
 
-### Commands allowed when set as SSH Shell
+### 作为 shell 时可用的指令
 
-Only limited command will be supported over ssh command
-  (parsed via `$SSH_ORIGINAL_COMMAND`), and those are:
+当作为 shell 模式运行，只有一部分的指令被允许使用
+  （通过环境变量 `$SSH_ORIGINAL_COMMAND` 解析）：
 
-* Backup Management
-  * `save`
-  * `load`
-  * `list`
-  * `verify`
+* 备份管理
+  * `save` - 储存
+  * `load` - 读取
+  * `list` - 列出
+  * `verify` - 验证备份包签名
 
-To access the full command set (not recommend),
-  call `backup-cli` directly from a shell over ssh. 
+如果需要访问完整的指令（不推荐），直接在不限制的 `ssh` shell
+  环境执行 `backup-cli` 即可。
 
-### Invoke from SSH without set as a shell
+### 从 SSH Shell 调用
 
 ```shell script
 tar zcv /my-backup | ssh backup@example.com -- backup-cli save -name backup1-daily
 ```
 
-### Add checksum to an existing file
+### 手动计算签名
 
 ```shell script
 sha256sum /path/to/file | head -c 64 | xxd -r -p > /path/to/file.sha256
 
-# To upload with the checksum
+# 上传签名后的文件
 cat /path/to/file /path/to/file.sha256 | ssh backup@example.com -- backup-cli save -name backup1-daily
 ```
 
 ## TODO
 
-- [ ] Add Unit test & integration test (partial).
-- [ ] Add command to clean up old backups (e.g. keep last 3)
-- [x] Command to load backup `backup-cli load -name <name> [-time <time>|"latest"]`
-- [x] Command to list backup `backup-cli list [-name <name>]`
-- [x] Some verification mechanism; e.g. generate checksum before the upload.
-  - Checksum will be generated on encrypt & verified when decrypting.
-  - [x] Add `verify` command (specific project / version or all)
+参见英文说明。
 
 
 [README_EN]: https://github.com/jixunmoe-go/backups/blob/master/README.MD
