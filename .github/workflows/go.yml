@@ -35,8 +35,5 @@ jobs:
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.1.4
         with:
-          # Artifact name
-          name: artifact
-          # A file, directory or wildcard pattern that describes what to upload
+          name: binaries
           path: bin/
-          # The desired behavior if no files are found using the provided path.
