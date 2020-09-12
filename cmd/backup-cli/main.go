@@ -26,6 +26,10 @@ func handleCommand(argv []string) int {
 		return commandDecrypt(argv[2:])
 	case "save":
 		return commandSave(argv[2:])
+	case "load":
+		return commandLoad(argv[2:])
+	case "list":
+		return commandList(argv[2:])
 	}
 
 	println("Unknown command " + argv[1] + ".")
@@ -38,9 +42,17 @@ func handleCommand(argv []string) int {
 func printHelp() {
 	println(fmt.Sprintf("usage: %s <command> [<args>]", os.Args[0]))
 	println("Commands available: ")
+	println("")
+	println("Key related")
 	println(" gen      Generate a private key.")
 	println(" pubkey   Get public key from a given private key.")
+	println("")
+	println("Encryption")
 	println(" encrypt  Encrypt bytes from stdin (with pubkey) and write to stdout.")
 	println(" decrypt  Decrypt bytes from stdin (with privkey) and write to stdout.")
+	println("")
+	println("Backup management")
 	println(" save     Save content received from stdin to a specified location.")
+	println(" load     Load content stored in the backup server.")
+	println(" list     List backup projects, or versions of a given backup project.")
 }

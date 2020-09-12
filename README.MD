@@ -24,7 +24,7 @@ $ backup-cli
 usage: backup-cli <command> [<args>]
 Commands available: 
  gen      Generate a private key.
- pubkey   Get public key from a given private key.
+ pubkey   Get public key from a given private key. 
  encrypt  Encrypt bytes from stdin (with pubkey) and write to stdout.
  decrypt  Decrypt bytes from stdin (with privkey) and write to stdout.
  save     Save content received from stdin to a specified location.
@@ -52,6 +52,6 @@ $ tar zcv /my-backup | ssh backup@example.com -- 'backup-cli save -name b1/daily
 
 - [ ] Add Unit test & integration test.
 - [ ] Add command to clean up old backups (e.g. keep last 3)
-- [ ] Command to load backup `backup-cli load -name <name> [-time <time>|"latest"]`
-- [ ] Command to list backup `backup-cli list [-name <name>]`
+- [x] Command to load backup `backup-cli load -name <name> [-time <time>|"latest"]`
+- [x] Command to list backup `backup-cli list [-name <name>]`
 - [ ] Some verification mechanism; e.g. generate checksum before the upload.
