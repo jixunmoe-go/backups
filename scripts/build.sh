@@ -15,18 +15,17 @@ build() {
     EXT=".exe"
   fi
 
-  NAME="backup-cli-${GOOS}-${GOARCH}${EXT}"
-  OUTPATH="${BINDIR}/${NAME}"
+  NAME="backup-cli-${GOOS}-${GOARCH}"
+  OUT_PATH="${BINDIR}/${NAME}"
   echo "Building ${NAME}..."
-  go build -trimpath -ldflags '-w -s' -o "${OUTPATH}" ./cmd/backup-cli
+  go build -trimpath -ldflags '-w -s' -o "${OUT_PATH}${EXT}" ./cmd/backup-cli
 
   if [ "$PACK" = "1" ]; then
     if [ "${GOOS}" = "windows" ]; then
-      zip -j "${OUTPATH}.zip" "${OUTPATH}"
+      zip -j "${OUT_PATH}.zip" "${OUT_PATH}${EXT}"
     else
-      tar -C "${BINDIR}" -zcvf "${OUTPATH}.tar.gz" "${NAME}"
+      tar -C "${BINDIR}" -zcvf "${OUT_PATH}.tar.gz" "${NAME}"
     fi
-    rm "${OUTPATH}"
   fi
 }
 
@@ -34,7 +33,7 @@ build windows amd64
 build linux amd64
 
 # Should work for most rpi we need...
-# Armv6 (Raspberry Pi 1/Zero/Zero W/CM)
-# Armv7 (Raspberry Pi 2)
-# Armv8 (Raspberry Pi 3)
+# arm v6 (Raspberry Pi 1/Zero/Zero W/CM)
+# arm v7 (Raspberry Pi 2)
+# arm v8 (Raspberry Pi 3)
 build linux armv7

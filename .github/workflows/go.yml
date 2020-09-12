@@ -35,5 +35,11 @@ jobs:
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.1.4
         with:
-          name: binaries
-          path: bin/
+          name: windows-binaries
+          path: bin/*-windows-*
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.1.4
+        with:
+          name: linux-binaries
+          path: bin/*-linux-*
