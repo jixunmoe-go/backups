@@ -50,8 +50,10 @@ $ tar zcv /my-backup | ssh backup@example.com -- 'backup-cli save -name b1/daily
 
 ## TODO
 
-- [ ] Add Unit test & integration test.
+- [ ] Add Unit test & integration test (partial).
 - [ ] Add command to clean up old backups (e.g. keep last 3)
 - [x] Command to load backup `backup-cli load -name <name> [-time <time>|"latest"]`
 - [x] Command to list backup `backup-cli list [-name <name>]`
-- [ ] Some verification mechanism; e.g. generate checksum before the upload.
+- [x] Some verification mechanism; e.g. generate checksum before the upload.
+  - Checksum will be generated on encrypt & verified when decrypting.
+  - [ ] Add `verify` command (specific project / version or all)

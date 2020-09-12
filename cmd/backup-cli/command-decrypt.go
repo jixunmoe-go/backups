@@ -41,9 +41,8 @@ func decryptStdin(privateKeyStr string) int {
 
 	err = crypto.DecryptStream(os.Stdin, os.Stdout, privateKey)
 	if err != nil {
-		println("failed to encrypt: " + err.Error())
+		println("failed to decrypt: " + err.Error())
 		return 3
 	}
 	return 0
 }
-
