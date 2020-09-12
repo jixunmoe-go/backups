@@ -42,16 +42,23 @@ func handleCommand(argv []string) int {
 	}
 
 	switch command {
+	// SSH Shell
 	case "ssh":
 		return commandSSH()
+
+	// Key related
 	case "gen":
 		return commandGenerate()
 	case "pubkey":
 		return commandPubKey()
+
+	// Encryption
 	case "encrypt":
 		return commandEncrypt(argv[2:])
 	case "decrypt":
 		return commandDecrypt(argv[2:])
+
+	// Backup management
 	case "save":
 		return commandSave(argv[2:])
 	case "load":
