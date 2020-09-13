@@ -26,6 +26,9 @@ backup-cli load test1 latest | backup-cli decrypt "$(cat tmp/priv)" > tmp/decryp
 EXPECTED="$(< tmp/8M sha256sum)"
 ACTUAL="$(< tmp/decrypted sha256sum)"
 
+# Clean up
+rm -rf tmp backup-cli
+
 if [ "$EXPECTED" = "$ACTUAL" ]; then
   echo "TEST OK!"
 else
