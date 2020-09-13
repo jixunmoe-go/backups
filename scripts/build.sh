@@ -8,8 +8,8 @@ if [ -z "${BINDIR}" ]; then
 fi
 
 build() {
-  GOOS="$1"
-  GOARCH="$2"
+  export GOOS="$1"
+  export GOARCH="$2"
   EXT=""
   if [ "${GOOS}" = "windows" ]; then
     EXT=".exe"
