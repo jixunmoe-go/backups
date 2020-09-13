@@ -32,8 +32,6 @@ build() {
 build windows amd64
 build linux amd64
 
-# Should work for most rpi we need...
-# arm v6 (Raspberry Pi 1/Zero/Zero W/CM)
-# arm v7 (Raspberry Pi 2)
-# arm v8 (Raspberry Pi 3)
-build linux armv7
+# arm: arm v6 (Raspberry Pi 1/Zero/Zero W/CM)
+# other arm arch does not seem to be included by default?
+build linux arm
