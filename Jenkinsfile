@@ -41,6 +41,15 @@ pipeline {
       }
     }
 
+    stage('Test') {
+      steps {
+        sh '''
+        go test -v ./...
+        ./scripts/integration-test.sh
+        '''
+      }
+    }
+
     stage('Archive') {
       steps {
         archiveArtifacts 'bin/*.tar.gz, bin/*.zip'
