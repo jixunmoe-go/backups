@@ -1,28 +1,36 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"github.com/jixunmoe-go/backups/utils/backup"
 	"io"
 	"os"
 	"path"
 	"time"
 )
 
-func commandSave(argv []string) int {
-	command := flag.NewFlagSet("save", flag.ExitOnError)
+func printSaveHelp() {
+	println(appName + " save <name>")
+	println("")
+	println("Save data received from stdin pipe to a pre-defined backup storage location.")
+	println("")
+	println("e.g.")
+	println("  cat backup.tar.gz | " + appName + " save my-db-01")
+	println("    Save a backup file to backup storage.")
+	println("(SSH Shell)")
+	println("  cat backup.tar.gz | ssh backup@example.com save my-db-01")
+}
 
-	var projectName string
-	command.StringVar(&projectName, "name", "", "The name of the archive. e.g. blog-sql")
-	if err := command.Parse(argv); err != nil {
-		println("err: could not parse args: " + err.Error())
-		command.PrintDefaults()
-		return 2
+func commandSave(argv []string) int {
+	if len(argv) == 0 {
+		println("missing argument <name>")
+		return 1
 	}
 
+	projectName := argv[0]
+
 	if projectName == "" {
-		println("err: -name is empty")
-		command.PrintDefaults()
+		println("err: <name> is empty")
 		return 1
 	}
 
@@ -30,12 +38,7 @@ func commandSave(argv []string) int {
 }
 
 func copyToFile(projectName string) int {
-	backupBase := os.Getenv("BACKUP_BASE")
-	if backupBase == "" {
-		// onpxhc-fgbentr: backup-storage after rot13
-		backupBase = "/srv/onpxhc-fgbentr"
-	}
-	backupPath := path.Join(backupBase, projectName)
+	backupPath := backup.GetBackupLocation(projectName)
 	err := os.MkdirAll(backupPath, 0700)
 	if err != nil {
 		println("err: could not create backup dir: " + err.Error())

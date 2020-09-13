@@ -2,25 +2,30 @@ package main
 
 import (
 	"encoding/base64"
-	"flag"
 	"github.com/jixunmoe-go/backups/utils/crypto"
 	"os"
 )
 
-func commandEncrypt(argv []string) int {
-	command := flag.NewFlagSet("encrypt", flag.ExitOnError)
+func printEncryptHelp() {
+	println(appName + " encrypt <pubkey>")
+	println("")
+	println("Encrypts content passed in stdin.")
+	println("AES encryption key will be derived from the public key.")
+	println("")
+	println("e.g.")
+	println("  " + appName + " encrypt \"$(cat public.key)\"")
+}
 
-	var publicKey string
-	command.StringVar(&publicKey, "pubkey", "", "Public key in base64")
-	if err := command.Parse(argv); err != nil {
-		println("err: could not parse args: " + err.Error())
-		command.PrintDefaults()
-		return 2
+func commandEncrypt(argv []string) int {
+	if len(argv) < 1 {
+		println("Need to specify public key.")
+		return 1
 	}
 
+	publicKey := argv[0]
+
 	if publicKey == "" {
-		println("err: -pubkey is empty")
-		command.PrintDefaults()
+		println("err: pubkey is empty")
 		return 1
 	}
 
@@ -28,11 +33,6 @@ func commandEncrypt(argv []string) int {
 }
 
 func encryptStdin(pubkeyStr string) int {
-	if pubkeyStr == "" {
-		println("err: public key is empty")
-		return 1
-	}
-
 	publicKey, err := base64.StdEncoding.DecodeString(pubkeyStr)
 	if err != nil || len(publicKey) != crypto.PublicKeySize {
 		println("err: not a valid public key (not base64 or size mismatch)")

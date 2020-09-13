@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"github.com/jixunmoe-go/backups/utils/backup"
 	"io"
 	"os"
@@ -9,22 +8,35 @@ import (
 	"strings"
 )
 
-func commandLoad(argv []string) int {
-	command := flag.NewFlagSet("load", flag.ExitOnError)
+func printLoadHelp() {
+	println(appName + " load <name> [time=latest]")
+	println("")
+	println("Load an existing backup and send to stdout.")
+	println("")
+	println("e.g.")
+	println("  " + appName + " load blog-daily latest")
+	println("    Loads the latest copy of 'blog-daily' backup.")
+	println("  " + appName + " load blog-daily 1599609600")
+	println("    Loads the local copy of 'blog-daily' backup, created in 2020-09-09.")
+	println("(SSH Shell)")
+	println(`  ssh backup@example.com load my-db-01 | backup-cli decrypt "$(cat private.key)" > my-db-01.tar.gz`)
+	println("    Download and decrypt the archive, then save it to a file.")
+}
 
-	var projectName string
-	var archiveTime string
-	command.StringVar(&projectName, "name", "", "The name of the archive. e.g. blog-sql")
-	command.StringVar(&archiveTime, "time", "latest", "The version of archive. Matches latest copy that contains this parameter as prefix.")
-	if err := command.Parse(argv); err != nil {
-		println("err: could not parse args: " + err.Error())
-		command.PrintDefaults()
-		return 2
+func commandLoad(argv []string) int {
+	if len(argv) == 0 {
+		println("do not know which archive to load.")
+		return 1
+	}
+
+	projectName := argv[0]
+	archiveTime := ""
+	if len(argv) > 1 {
+		archiveTime = argv[1]
 	}
 
 	if projectName == "" {
-		println("err: -name is empty")
-		command.PrintDefaults()
+		println("err: name is empty")
 		return 1
 	}
 

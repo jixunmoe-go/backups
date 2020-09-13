@@ -8,7 +8,16 @@ import (
 	"os"
 )
 
-func commandPubKey() int {
+func printPubKeyHelp() {
+	println(appName + " pubkey")
+	println("")
+	println("Derives corresponding public key for a given private key piped in.")
+	println("")
+	println("e.g.")
+	println("  cat private.key | " + appName + " pubkey > public.key")
+}
+
+func commandPubKey(_ []string) int {
 	privKeyStr, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
 		println("could not get private key from stdin: " + err.Error())

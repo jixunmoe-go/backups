@@ -26,22 +26,22 @@ $ backup-cli
 usage: backup-cli <command> [<args>]
 Commands available: 
 
-SSH Execution
- ssh      Use 'backup-cli ssh' as forced command.
+SSH Shell
+ ssh        Enter SSH Shell mode and parse commands from $SSH_ORIGINAL_COMMAND.
 
-Key related
- gen      Generate a private key.
- pubkey   Get public key from a given private key.
+SSH Shell
+ gen        Generate a private key.
+ pubkey     Get public key from a given private key.
 
 Encryption
- encrypt  Encrypt bytes from stdin (with pubkey) and write to stdout.
- decrypt  Decrypt bytes from stdin (with privkey) and write to stdout.
+ encrypt    Encrypt bytes from stdin (with pubkey) and write to stdout.
+ decrypt    Decrypt bytes from stdin (with privkey) and write to stdout.
 
-Backup management
- save     Save content received from stdin to a specified location.
- load     Load content stored in the backup server.
- list     List backup projects, or versions of a given backup project.
- verify   Verify all or a specific project/version.
+Backup Management
+ save       Save content received from stdin to a specified location.
+ load       Load content stored in the backup server.
+ list       List backup projects, or versions of a given backup project.
+ verify     Verify all or a specific project/version.
 ```
 
 ## 使用示例
@@ -51,14 +51,14 @@ $ backup-cli gen | tee priv | backup-cli pubkey > pub
 $ cat priv pub
 s9OntFH589GQrHrztVDkdM7vwLFk85s1sDP3E7ez9qo=
 ZRVTaUl3qLMaBH+KOZWlhsIM52lPNteVx/qe+8pIPFo=
-$ echo 'hello!!' | backup-cli encrypt -pubkey "$(cat pub)" | tee c1.bin | xxd
-00000000: 4521 4a58 c69c bf5e 22ae d5a3 f3a1 e1e4  E!JX...^".......
-00000010: 6884 9b20 114b 8975 5b59 f822 ffc6 0810  h.. .K.u[Y."....
-00000020: 6205 dd0f 7114 0a36 caf4 e9eb a12a 6200  b...q..6.....*b.
-00000030: 3cf9 f04f ff33 3fe2 9f46 5ea7 a4d6 1e50  <..O.3?..F^....P
-00000040: c631 ea97 1ce3 cb89 97f8 34d1 54eb c9e0  .1........4.T...
-00000050: 9f3d 6438 b64d f77a 976e 6f41            .=d8.M.z.noA
-$ cat c1.bin | backup-cli decrypt -privkey "$(cat priv)" | xxd
+$ echo 'hello!!' | backup-cli encrypt "$(cat pub)" | tee c1.bin | xxd
+00000000: 4521 4a58 131e 8f31 4563 3782 dc9f 260b  E!JX...1Ec7...&.
+00000010: 58d2 0c14 5798 506e 9986 b754 d853 b43b  X...W.Pn...T.S.;
+00000020: f6ab 665a 81ad 5951 ec55 2fbc aca2 723a  ..fZ..YQ.U/...r:
+00000030: b03f 516e 98fa d16a 9d1c bf5d 5246 24ca  .?Qn...j...]RF$.
+00000040: 4a37 2c9b 3753 00eb 36c0 1bad ae92 3e2a  J7,.7S..6.....>*
+00000050: eb3b 3067 ee22 5943 3f32 3835            .;0g."YC?285
+$ cat c1.bin | backup-cli decrypt "$(cat priv)" | xxd
 00000000: 6865 6c6c 6f21 210a                      hello!!.
 ```
 
@@ -78,7 +78,7 @@ command="/path/to/backup-cli ssh" ssh-rsa ...
 ```shell script
 # 上传备份到某处…
 
-tar zcv /my-backup | ssh backup@example.com -- save -name backup1-daily
+tar zcv /my-backup | ssh backup@example.com -- save backup1-daily
 ```
 
 ### 作为 shell 时可用的指令
@@ -98,7 +98,7 @@ tar zcv /my-backup | ssh backup@example.com -- save -name backup1-daily
 ### 从 SSH Shell 调用
 
 ```shell script
-tar zcv /my-backup | ssh backup@example.com -- backup-cli save -name backup1-daily
+tar zcv /my-backup | ssh backup@example.com -- backup-cli save backup1-daily
 ```
 
 ### 手动计算签名
@@ -107,7 +107,7 @@ tar zcv /my-backup | ssh backup@example.com -- backup-cli save -name backup1-dai
 sha256sum /path/to/file | head -c 64 | xxd -r -p > /path/to/file.sha256
 
 # 上传签名后的文件
-cat /path/to/file /path/to/file.sha256 | ssh backup@example.com -- backup-cli save -name backup1-daily
+cat /path/to/file /path/to/file.sha256 | ssh backup@example.com -- backup-cli save backup1-daily
 ```
 
 ## TODO

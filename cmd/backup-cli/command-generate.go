@@ -6,7 +6,13 @@ import (
 	"github.com/jixunmoe-go/backups/utils/crypto"
 )
 
-func commandGenerate() int {
+func printGenerateHelp() {
+	println(appName + " gen")
+	println("")
+	println("Generates a private key, in base64 encoded format.")
+}
+
+func commandGenerate(_ []string) int {
 	privateKey, err := crypto.GenPrivateKey()
 	if err != nil {
 		println("err: could not generate key: " + err.Error())

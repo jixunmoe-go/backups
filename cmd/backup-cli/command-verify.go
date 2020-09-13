@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"github.com/jixunmoe-go/backups/utils/backup"
 	"github.com/jixunmoe-go/backups/utils/checksum"
@@ -11,18 +10,29 @@ import (
 	"strings"
 )
 
+func printVerifyHelp() {
+	println(appName + " verify [name] [timestamp]")
+	println("")
+	println("Verify one or multiple archives uploaded.")
+	println("'name' and 'timestamp' are matched as prefix.")
+	println("")
+	println("e.g.")
+	println("  " + appName + " verify")
+	println("    Verify all uploaded archives checksum.")
+	println("  " + appName + " verify db01")
+	println("    Verify all archives for 'db01'.")
+	println("  " + appName + " verify db01 1598918400")
+	println("    Verify the archive uploaded to 'db01' in 2020.09.01")
+}
+
 func commandVerify(argv []string) int {
-	command := flag.NewFlagSet("verify", flag.ExitOnError)
-
-	var name string
-	var time string
-	command.StringVar(&name, "name", "", "Project name prefix (colon separated, leave empty for all)")
-	command.StringVar(&time, "time", "", "The timestamp prefix (colon separated, leave empty for all)")
-
-	if err := command.Parse(argv); err != nil {
-		println("err: could not parse args: " + err.Error())
-		command.PrintDefaults()
-		return 2
+	name := ""
+	time := ""
+	if len(argv) > 1 {
+		time = argv[1]
+	}
+	if len(argv) > 0 {
+		name = argv[0]
 	}
 
 	return verifyFiles(name, time)

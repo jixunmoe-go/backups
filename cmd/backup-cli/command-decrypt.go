@@ -2,25 +2,31 @@ package main
 
 import (
 	"encoding/base64"
-	"flag"
+	"fmt"
 	"github.com/jixunmoe-go/backups/utils/crypto"
 	"os"
 )
 
-func commandDecrypt(argv []string) int {
-	command := flag.NewFlagSet("decrypt", flag.ExitOnError)
+func printDecryptHelp() {
+	println(appName + " decrypt <privkey>")
+	println("")
+	println("Decrypts content passed in stdin. Header & checksum will be verified.")
+	println("When the checksum verification failed, the program will return a non-zero code.")
+	println("")
+	println("e.g.")
+	println("  " + appName + " decrypt \"$(cat private.key)\"")
+}
 
-	var privateKey string
-	command.StringVar(&privateKey, "privkey", "", "Private key in base64")
-	if err := command.Parse(argv); err != nil {
-		println("err: could not parse args: " + err.Error())
-		command.PrintDefaults()
-		return 2
+func commandDecrypt(argv []string) int {
+	if len(argv) < 1 {
+		println("Need to specify private key.")
+		return 1
 	}
 
+	privateKey := argv[0]
+
 	if privateKey == "" {
-		println("err: -privkey is empty")
-		command.PrintDefaults()
+		println("err: private is empty")
 		return 1
 	}
 
@@ -28,14 +34,12 @@ func commandDecrypt(argv []string) int {
 }
 
 func decryptStdin(privateKeyStr string) int {
-	if privateKeyStr == "" {
-		println("err: private key is empty")
-		return 1
-	}
-
 	privateKey, err := base64.StdEncoding.DecodeString(privateKeyStr)
+	fmt.Println("---")
+	fmt.Println(privateKeyStr, len(privateKey), err)
+	fmt.Println("---")
 	if err != nil || len(privateKey) != crypto.PrivateKeySize {
-		println("err: not a valid public key (not base64 or size mismatch)")
+		println("err: not a valid private key (not base64 or size mismatch)")
 		return 2
 	}
 
