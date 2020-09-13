@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/base64"
-	"fmt"
 	"github.com/jixunmoe-go/backups/utils/crypto"
 	"os"
 )
@@ -35,9 +34,6 @@ func commandDecrypt(argv []string) int {
 
 func decryptStdin(privateKeyStr string) int {
 	privateKey, err := base64.StdEncoding.DecodeString(privateKeyStr)
-	fmt.Println("---")
-	fmt.Println(privateKeyStr, len(privateKey), err)
-	fmt.Println("---")
 	if err != nil || len(privateKey) != crypto.PrivateKeySize {
 		println("err: not a valid private key (not base64 or size mismatch)")
 		return 2
