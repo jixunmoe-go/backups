@@ -7,6 +7,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"github.com/jixunmoe-go/backups/utils/checksum"
+	"github.com/jixunmoe-go/backups/utils/memory"
 	"io"
 )
 
@@ -25,6 +26,7 @@ func EncryptStream(input io.Reader, output io.Writer, publicKey PublicKey) error
 	}
 
 	aesBlock, err := aes.NewCipher(aesKey)
+	memory.SetZero(aesKey)
 	if err != nil {
 		return fmt.Errorf("could not init aes: %w", err)
 	}
@@ -67,6 +69,7 @@ func DecryptStream(input io.Reader, output io.Writer, privateKey PrivateKey) err
 	}
 
 	aesBlock, err := aes.NewCipher(aesKey)
+	memory.SetZero(aesKey)
 	if err != nil {
 		return fmt.Errorf("could not init aes: %w", err)
 	}
