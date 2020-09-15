@@ -5,6 +5,12 @@ README: [English][README_EN] | **简体中文**
 
 一套用于辅助备份的命令行工具。
 
+注意：请在安全的环境储存私钥及进行解密过程。
+     （如在不同网络的机器上生成并储存私钥）
+     [Go _并不会_ 在初始化后清理密钥][21865]。
+
+该程序会尽量清理内存里的私钥内容，但不能提供任何保证。
+
 ## 加密
 
 标准 AES (256-bit) 加密，OFB 模式。
@@ -58,7 +64,7 @@ $ echo 'hello!!' | backup-cli encrypt "$(cat pub)" | tee c1.bin | xxd
 00000030: b03f 516e 98fa d16a 9d1c bf5d 5246 24ca  .?Qn...j...]RF$.
 00000040: 4a37 2c9b 3753 00eb 36c0 1bad ae92 3e2a  J7,.7S..6.....>*
 00000050: eb3b 3067 ee22 5943 3f32 3835            .;0g."YC?285
-$ cat c1.bin | backup-cli decrypt "$(cat priv)" | xxd
+$ cat c1.bin | backup-cli decrypt priv | xxd
 00000000: 6865 6c6c 6f21 210a                      hello!!.
 ```
 
@@ -115,5 +121,6 @@ cat /path/to/file /path/to/file.sha256 | ssh backup@example.com -- backup-cli sa
 参见英文说明。
 
 
+[21865]: https://github.com/golang/go/issues/21865
 [README_EN]: https://github.com/jixunmoe-go/backups/blob/master/README.MD
 [README_CN]: https://github.com/jixunmoe-go/backups/blob/master/README.zh-CN.MD

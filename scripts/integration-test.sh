@@ -21,7 +21,7 @@ dd if=/dev/urandom bs=4096 count=$((1024 * 4)) | tee tmp/8M \
   | backup-cli save test1
 
 backup-cli verify test1
-backup-cli load test1 latest | backup-cli decrypt "$(cat tmp/priv)" > tmp/decrypted
+backup-cli load test1 latest | backup-cli decrypt tmp/priv > tmp/decrypted
 
 EXPECTED="$(< tmp/8M sha256sum)"
 ACTUAL="$(< tmp/decrypted sha256sum)"

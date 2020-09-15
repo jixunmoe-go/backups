@@ -5,6 +5,13 @@ README: **English** | [简体中文][README_CN]
 
 A set of cli tools to help backup.
 
+Note: Please store private key & run decrypt command from a safe environment
+      (e.g. generate & store private key offline).
+      [Go _does not_ clear AES key in-memory after initialisation][21865].
+
+The program will try to erase private key from the memory
+  in the best effort, but there's no guarantee that it will be. 
+
 ## Encryption
 
 Standard AES (256-bit) Encryption in OFB mode.
@@ -59,7 +66,7 @@ $ echo 'hello!!' | backup-cli encrypt "$(cat pub)" | tee c1.bin | xxd
 00000030: b03f 516e 98fa d16a 9d1c bf5d 5246 24ca  .?Qn...j...]RF$.
 00000040: 4a37 2c9b 3753 00eb 36c0 1bad ae92 3e2a  J7,.7S..6.....>*
 00000050: eb3b 3067 ee22 5943 3f32 3835            .;0g."YC?285
-$ cat c1.bin | backup-cli decrypt "$(cat priv)" | xxd
+$ cat c1.bin | backup-cli decrypt priv | xxd
 00000000: 6865 6c6c 6f21 210a                      hello!!.
 ```
 
@@ -121,7 +128,8 @@ cat /path/to/file /path/to/file.sha256 | ssh backup@example.com -- backup-cli sa
 - [x] Some verification mechanism; e.g. generate checksum before the upload.
   - Checksum will be generated on encrypt & verified when decrypting.
   - [x] Add `verify` command (specific project / version or all)
+- [x] Pass private key using file instead.
 
-
+[21865]: https://github.com/golang/go/issues/21865
 [README_EN]: https://github.com/jixunmoe-go/backups/blob/master/README.MD
 [README_CN]: https://github.com/jixunmoe-go/backups/blob/master/README.zh-CN.MD

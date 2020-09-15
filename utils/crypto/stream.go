@@ -64,6 +64,8 @@ func DecryptStream(input io.Reader, output io.Writer, privateKey PrivateKey) err
 	}
 
 	aesKey, err := DeriveEncryptionKey(privateKey, publicKey)
+	memory.SetZero(privateKey)
+	memory.SetZero(publicKey)
 	if err != nil {
 		return fmt.Errorf("could not derive aes key: %w", err)
 	}

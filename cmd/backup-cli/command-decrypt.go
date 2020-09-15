@@ -3,12 +3,14 @@ package main
 import (
 	"encoding/base64"
 	"github.com/jixunmoe-go/backups/utils/crypto"
+	"github.com/jixunmoe-go/backups/utils/memory"
 	"github.com/jixunmoe-go/backups/utils/stream"
 	"io"
+	"io/ioutil"
 )
 
 func printDecryptHelp() {
-	println(appName + " decrypt <privkey> [input] [output]")
+	println(appName + " decrypt <path to privkey> [input] [output]")
 	println("")
 	println("Decrypts content passed in stdin. Header & checksum will be verified.")
 	println("When the checksum verification failed, the program will return a non-zero code.")
@@ -42,12 +44,19 @@ func commandDecrypt(argv []string) int {
 	defer input.Close()
 	defer output.Close()
 
-	return decryptStdin(privateKey, input, output)
+	privateKeyB64, err := ioutil.ReadFile(privateKey)
+	if err != nil {
+		println("could not read private key")
+		return 1
+	}
+	return decryptStdin(privateKeyB64, input, output)
 }
 
-func decryptStdin(privateKeyStr string, input io.Reader, output io.Writer) int {
-	privateKey, err := base64.StdEncoding.DecodeString(privateKeyStr)
-	if err != nil || len(privateKey) != crypto.PrivateKeySize {
+func decryptStdin(privateKeyB64 []byte, input io.Reader, output io.Writer) int {
+	privateKey := make([]byte, crypto.PrivateKeySize)
+	n, err := base64.StdEncoding.Decode(privateKey, privateKeyB64)
+	memory.SetZero(privateKeyB64)
+	if err != nil || n != crypto.PrivateKeySize {
 		println("err: not a valid private key (not base64 or size mismatch)")
 		return 2
 	}
