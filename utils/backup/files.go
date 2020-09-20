@@ -12,13 +12,13 @@ var reFileName = regexp.MustCompile(`^(\d+)\.bin$`)
 
 type ArchiveInfo struct {
 	FileName string
-	Time     uint64
+	Time     int64
 	Project  string
 }
 
 func createArchiveFromName(project, name string) *ArchiveInfo {
 	m := reFileName.FindStringSubmatch(name)
-	ts, err := strconv.ParseUint(m[1], 10, 64)
+	ts, err := strconv.ParseInt(m[1], 10, 64)
 	if err != nil {
 		return nil
 	}

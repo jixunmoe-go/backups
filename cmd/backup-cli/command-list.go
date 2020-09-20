@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/jixunmoe-go/backups/utils/backup"
+	"time"
 )
 
 func printListHelp() {
@@ -41,6 +42,6 @@ func listArchive(projectName string) {
 	fmt.Printf("%d version(s) available for %s\n", len(archives), projectName)
 
 	for i, a := range archives {
-		fmt.Printf(" %2d. %s\n", i+1, a.FileName)
+		fmt.Printf(" %2d. %s (%s)\n", i+1, a.FileName, time.Unix(a.Time, 0).UTC().Format(time.UnixDate))
 	}
 }
