@@ -43,9 +43,11 @@ func listArchive(projectName string) {
 	archives := backup.GetBackupArchives(projectName)
 	fmt.Printf("%d version(s) available for %s\n", len(archives), projectName)
 
+	tz := time.Now().Location()
+
 	for i, a := range archives {
 		size := a.GetFormattedSize()
-		date := time.Unix(a.Time, 0).Format(dateFormat)
+		date := time.Unix(a.Time, 0).In(tz).Format(dateFormat)
 		fmt.Printf(" %2d. %s (%8s, %s)\n", i+1, a.FileName, size, date)
 	}
 }
