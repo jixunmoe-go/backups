@@ -37,13 +37,15 @@ func listProjects() {
 	}
 }
 
-var dateFormat = "2006-01-02 15:04:05 (MST)"
+var dateFormat = "2006-01-02 15:04:05 @MST"
 
 func listArchive(projectName string) {
 	archives := backup.GetBackupArchives(projectName)
 	fmt.Printf("%d version(s) available for %s\n", len(archives), projectName)
 
 	for i, a := range archives {
-		fmt.Printf(" %2d. %s (%s)\n", i+1, a.FileName, time.Unix(a.Time, 0).UTC().Format(dateFormat))
+		size := a.GetFormattedSize()
+		date := time.Unix(a.Time, 0).Format(dateFormat)
+		fmt.Printf(" %2d. %s (%6s, %s)\n", i+1, a.FileName, size, date)
 	}
 }
