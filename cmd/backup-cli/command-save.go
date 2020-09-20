@@ -45,7 +45,7 @@ func copyToFile(projectName string) int {
 		return 1
 	}
 
-	backupArchive := path.Join(backupPath, fmt.Sprintf("%d.bin", time.Now().Unix()))
+	backupArchive := path.Join(backupPath, fmt.Sprintf("%d.bin", time.Now().UTC().Unix()))
 	f, err := os.OpenFile(backupArchive, os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		println("err: could not create file: " + err.Error())
