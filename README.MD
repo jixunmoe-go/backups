@@ -130,6 +130,17 @@ Better to run this inside the backup server.
 backup-cli load backup1-daily | backup-cli save backup1-weekly
 ```
 
+Duplicate a daily task under weekly task's name:
+
+```shell script
+(cd /srv/onpxhc-fgbentr;
+  for daily in *-daily ; do
+    weekly="$(echo -n "$daily" | sed 's/-daily$/-weekly/')"
+    backup-cli load "$daily" | backup-cli save "$weekly" 
+  done
+)
+```
+
 To run it over the network:
 
 ```shell script

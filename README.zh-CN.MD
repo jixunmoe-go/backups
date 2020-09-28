@@ -127,6 +127,17 @@ cat /path/to/file /path/to/file.sha256 | ssh backup@example.com -- backup-cli sa
 backup-cli load backup1-daily | backup-cli save backup1-weekly
 ```
 
+将最新的每日备份建立一份副本，并保存到同名的每周备份任务名下:
+
+```shell script
+(cd /srv/onpxhc-fgbentr;
+  for daily in *-daily ; do
+    weekly="$(echo -n "$daily" | sed 's/-daily$/-weekly/')"
+    backup-cli load "$daily" | backup-cli save "$weekly" 
+  done
+)
+```
+
 如果需要利用 SSH 来传输：
 
 ```shell script
