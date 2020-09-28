@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/jixunmoe-go/backups/utils/backup"
 	"strconv"
 )
@@ -35,15 +36,20 @@ func commandClean(args []string) int {
 	for _, project := range projects {
 		ok := 0
 		for _, archive := range backup.GetBackupArchives(project) {
+			fmt.Printf(" [...] %s/%s\r", project, archive.FileName)
 			if ok >= keepCount {
+				fmt.Printf(" [DEL]\n")
 				archive.Delete()
 				continue
 			}
 
 			success, _ := archive.Verify()
 			if success {
+				fmt.Printf(" [O K]\n")
 				ok++
 			} else {
+				fmt.Printf(" [VEF]\n")
+				archive.Delete()
 				bad++
 			}
 		}
