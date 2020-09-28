@@ -122,6 +122,21 @@ sha256sum /path/to/file | head -c 64 | xxd -r -p > /path/to/file.sha256
 cat /path/to/file /path/to/file.sha256 | ssh backup@example.com -- backup-cli save backup1-daily
 ```
 
+### Duplicate backup
+
+Better to run this inside the backup server. 
+
+```shell script
+backup-cli load backup1-daily | backup-cli save backup1-weekly
+```
+
+To run it over the network:
+
+```shell script
+ssh backup@example.com -- backup-cli load backup1-daily \
+  | ssh backup@example.com -- backup-cli save backup1-weekly
+```
+
 ## TODO
 
 - [ ] Add Unit test & integration test (partial).

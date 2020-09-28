@@ -119,6 +119,21 @@ sha256sum /path/to/file | head -c 64 | xxd -r -p > /path/to/file.sha256
 cat /path/to/file /path/to/file.sha256 | ssh backup@example.com -- backup-cli save backup1-daily
 ```
 
+### 建立备份副本
+
+推荐在备份服务器上执行。 
+
+```shell script
+backup-cli load backup1-daily | backup-cli save backup1-weekly
+```
+
+如果需要利用 SSH 来传输：
+
+```shell script
+ssh backup@example.com -- backup-cli load backup1-daily \
+  | ssh backup@example.com -- backup-cli save backup1-weekly
+```
+
 ## TODO
 
 参见英文说明。
