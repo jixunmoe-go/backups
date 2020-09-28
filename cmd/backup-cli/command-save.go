@@ -54,6 +54,7 @@ func copyToFile(projectName string) int {
 
 	_, err = io.Copy(f, os.Stdin)
 	if err != nil {
+		println(fmt.Sprintf("could not save: %s", err))
 		_ = f.Close()
 		_ = os.Remove(backupArchive)
 		return 9
