@@ -3,10 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/jixunmoe-go/backups/utils/backup"
-	"github.com/jixunmoe-go/backups/utils/checksum"
-	"github.com/jixunmoe-go/backups/utils/dummy"
-	"io"
-	"os"
 	"strings"
 )
 
@@ -53,16 +49,11 @@ func verifyFiles(name, time string) int {
 			for _, archive := range backup.GetBackupArchives(project) {
 				if strings.HasPrefix(archive.FileName, time) {
 					fmt.Printf(" [...] %s/%s\r", project, archive.FileName)
-					f, err := os.OpenFile(archive.GetPath(), os.O_RDONLY, 0600)
-					if err != nil {
-						errors += 1
-						printVerifyResult(false)
-						continue
-					}
-					reader := checksum.NewReader(f)
-					_, _ = io.Copy(&dummy.Writer{}, reader)
-					verified := reader.Verify()
+					verified, err := archive.Verify()
 					printVerifyResult(verified)
+					if err != nil {
+						println(err)
+					}
 					if !verified {
 						errors += 1
 					}

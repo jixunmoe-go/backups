@@ -45,6 +45,9 @@ Encryption
  encrypt    Encrypt bytes from stdin (with pubkey) and write to stdout.
  decrypt    Decrypt bytes from stdin (with privkey) and write to stdout.
 
+Admin
+ clean      Remove old archives.
+
 Backup Management
  save       Save content received from stdin to a specified location.
  load       Load content stored in the backup server.
@@ -122,7 +125,7 @@ cat /path/to/file /path/to/file.sha256 | ssh backup@example.com -- backup-cli sa
 ## TODO
 
 - [ ] Add Unit test & integration test (partial).
-- [ ] Add command to clean up old backups (e.g. keep last 3)
+- [x] Add command to clean up old backups (e.g. keep last 3)
 - [x] Command to load backup `backup-cli load <name> [time="latest"]`
 - [x] Command to list backup `backup-cli list [<name>]`
 - [x] Some verification mechanism; e.g. generate checksum before the upload.

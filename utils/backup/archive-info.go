@@ -2,7 +2,10 @@ package backup
 
 import (
 	"fmt"
+	"github.com/jixunmoe-go/backups/utils/checksum"
+	"github.com/jixunmoe-go/backups/utils/dummy"
 	"github.com/jixunmoe-go/backups/utils/humanize"
+	"io"
 	"os"
 	"path"
 	"regexp"
@@ -40,4 +43,18 @@ func (a *ArchiveInfo) GetFormattedSize() string {
 		return fmt.Sprintf("(unknown size: %s)", err)
 	}
 	return humanize.ByteCountBinary(fi.Size())
+}
+
+func (a *ArchiveInfo) Verify() (bool, error) {
+	f, err := os.OpenFile(a.GetPath(), os.O_RDONLY, 0600)
+	if err != nil {
+		return false, err
+	}
+	reader := checksum.NewReader(f)
+	_, _ = io.Copy(&dummy.Writer{}, reader)
+	return reader.Verify(), nil
+}
+
+func (a *ArchiveInfo) Delete() {
+	_ = os.Remove(a.GetPath())
 }

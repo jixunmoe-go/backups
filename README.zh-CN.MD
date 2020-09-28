@@ -43,6 +43,9 @@ Encryption
  encrypt    Encrypt bytes from stdin (with pubkey) and write to stdout.
  decrypt    Decrypt bytes from stdin (with privkey) and write to stdout.
 
+Admin
+ clean      Remove old archives.
+
 Backup Management
  save       Save content received from stdin to a specified location.
  load       Load content stored in the backup server.

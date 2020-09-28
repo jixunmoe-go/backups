@@ -57,6 +57,16 @@ func initCommands() {
 			Description: "Decrypt bytes from stdin (with privkey) and write to stdout.",
 		},
 
+		// Admin
+		{
+			Header:      "Admin",
+			Run:         commandClean,
+			Help:        printCleanHelp,
+			SSH:         false,
+			Name:        "clean",
+			Description: "Remove old archives.",
+		},
+
 		// Backup Management
 		{
 			Header:      "Backup Management",
