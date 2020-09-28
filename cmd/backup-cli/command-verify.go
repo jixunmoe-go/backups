@@ -57,7 +57,7 @@ func verifyFiles(name, time string) int {
 					if err != nil {
 						errors += 1
 						printVerifyResult(false)
-						break
+						continue
 					}
 					reader := checksum.NewReader(f)
 					_, _ = io.Copy(&dummy.Writer{}, reader)
