@@ -18,7 +18,7 @@ func printDecryptHelp() {
 	println("Omit [output] or provide '-' to use stdout (default).")
 	println("")
 	println("e.g.")
-	println("  " + appName + " decrypt \"$(cat private.key)\"")
+	println("  " + appName + " decrypt /path/to/private.key crypted.tar.gz.bin decrypted.tar.gz")
 }
 
 func commandDecrypt(argv []string) int {
