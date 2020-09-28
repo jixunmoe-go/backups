@@ -11,6 +11,10 @@ func printCleanHelp() {
 	println(appName + " clean [n=5] [name1] [name2] ...")
 	println("")
 	println("Remove old backup archives. Keep the latest n copies.")
+	println("")
+	println("e.g.")
+	println("  " + appName + " clean")
+	println("  " + appName + " clean 5 blog-daily")
 }
 
 func commandClean(args []string) int {
