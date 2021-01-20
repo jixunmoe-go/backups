@@ -26,9 +26,15 @@ func readB64(t *testing.T, name string) []byte {
 	return decoded
 }
 
+func readTestKeys(t *testing.T) (pubKey PublicKey, privKey PrivateKey) {
+	pubKey = readB64(t, "testdata/pubkey.txt")
+	privKey = readB64(t, "testdata/privkey.txt")
+
+	return pubKey, privKey
+}
+
 func TestEncryptAndDecryptStream(t *testing.T) {
-	var pubKey PublicKey = readB64(t, "testdata/pubkey.txt")
-	var privKey PrivateKey = readB64(t, "testdata/privkey.txt")
+	pubKey, privKey := readTestKeys(t)
 
 	var cryptedBuf bytes.Buffer
 	err := EncryptStream(bytes.NewBufferString("hello!"), &cryptedBuf, pubKey)
@@ -49,7 +55,7 @@ func TestEncryptAndDecryptStream(t *testing.T) {
 }
 
 func TestDecryptDataWithGoodHash(t *testing.T) {
-	privKey := readB64(t, "testdata/privkey.txt")
+	_, privKey := readTestKeys(t)
 	encrypted := readFile(t, "testdata/encrypted_hash_ok.bin")
 
 	var decryptedBuf bytes.Buffer
@@ -64,7 +70,7 @@ func TestDecryptDataWithGoodHash(t *testing.T) {
 }
 
 func TestDecryptDataWithBadHash(t *testing.T) {
-	privKey := readB64(t, "testdata/privkey.txt")
+	_, privKey := readTestKeys(t)
 	encrypted := readFile(t, "testdata/encrypted_hash_bad.bin")
 
 	var decryptedBuf bytes.Buffer
