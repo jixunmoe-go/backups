@@ -3,6 +3,7 @@ package backup
 import (
 	"io/ioutil"
 	"sort"
+	"strings"
 )
 
 func GetBackupProjects() []string {
@@ -21,18 +22,18 @@ func GetBackupProjects() []string {
 }
 
 // GetBackupArchives returns a list of files (most recent ones at beginning)
-func GetBackupArchives(name string) []*ArchiveInfo {
+func GetBackupArchives(project string) []*ArchiveInfo {
 	var archives []*ArchiveInfo
-	root := GetBackupLocation(name)
-	s, err := ioutil.ReadDir(root)
+	root := GetBackupLocation(project)
+	dirContent, err := ioutil.ReadDir(root)
 	if err != nil {
 		println("could not read dir")
 		return nil
 	}
 
-	for _, v := range s {
-		if !v.IsDir() {
-			archive := createArchiveFromName(name, v.Name())
+	for _, file := range dirContent {
+		if !file.IsDir() {
+			archive := createArchiveFromName(project, file.Name())
 
 			if archive != nil {
 				archives = append(archives, archive)
@@ -44,5 +45,25 @@ func GetBackupArchives(name string) []*ArchiveInfo {
 		return archives[i].Time > archives[j].Time
 	})
 
+	return archives
+}
+
+func GetProjectsWithPrefix(prefix string) []string {
+	var names []string
+	for _, project := range GetBackupProjects() {
+		if strings.HasPrefix(project, prefix) {
+			names = append(names, project)
+		}
+	}
+	return names
+}
+
+func GetBackupArchivesWithPrefix(project, prefix string) []*ArchiveInfo {
+	var archives []*ArchiveInfo
+	for _, archive := range GetBackupArchives(project) {
+		if strings.HasPrefix(archive.FileName, prefix) {
+			archives = append(archives, archive)
+		}
+	}
 	return archives
 }

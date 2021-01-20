@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/jixunmoe-go/backups/utils/backup"
-	"strings"
 )
 
 func printVerifyHelp() {
@@ -44,20 +43,16 @@ func printVerifyResult(verified bool) {
 
 func verifyFiles(name, time string) int {
 	errors := 0
-	for _, project := range backup.GetBackupProjects() {
-		if strings.HasPrefix(project, name) {
-			for _, archive := range backup.GetBackupArchives(project) {
-				if strings.HasPrefix(archive.FileName, time) {
-					fmt.Printf(" [...] %s/%s\r", project, archive.FileName)
-					verified, err := archive.Verify()
-					printVerifyResult(verified)
-					if err != nil {
-						println(err)
-					}
-					if !verified {
-						errors += 1
-					}
-				}
+	for _, project := range backup.GetProjectsWithPrefix(name) {
+		for _, archive := range backup.GetBackupArchivesWithPrefix(project, time) {
+			fmt.Printf(" [...] %s/%s\r", project, archive.FileName)
+			verified, err := archive.Verify()
+			printVerifyResult(verified)
+			if err != nil {
+				println(err)
+			}
+			if !verified {
+				errors += 1
 			}
 		}
 	}
