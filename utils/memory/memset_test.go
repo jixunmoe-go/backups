@@ -10,37 +10,33 @@ const boundaryBufSize = zeroBufSize * 2
 const largeBufSize = zeroBufSize*5 + 30
 const benchBufSize = zeroBufSize*100 + 1
 
-func TestMemSetZero(t *testing.T) {
-	var data = make([]byte, arraySize)
-	_, _ = rand.Read(data)
-	SetZero(data)
+func assertAllZero(t *testing.T, data []byte) {
 	for i := range data {
 		if data[i] != 0 {
 			t.Fatalf("data[%d] should be zero.", i)
 		}
 	}
+}
+
+func TestMemSetZero(t *testing.T) {
+	var data = make([]byte, arraySize)
+	_, _ = rand.Read(data)
+	SetZero(data)
+	assertAllZero(t, data)
 }
 
 func TestSetZeroLarge(t *testing.T) {
 	var data = make([]byte, largeBufSize)
 	_, _ = rand.Read(data)
 	SetZero(data)
-	for i := range data {
-		if data[i] != 0 {
-			t.Fatalf("data[%d] should be zero.", i)
-		}
-	}
+	assertAllZero(t, data)
 }
 
 func TestSetZeroBoundary(t *testing.T) {
 	var data = make([]byte, boundaryBufSize)
 	_, _ = rand.Read(data)
 	SetZero(data)
-	for i := range data {
-		if data[i] != 0 {
-			t.Fatalf("data[%d] should be zero.", i)
-		}
-	}
+	assertAllZero(t, data)
 }
 
 func setZeroSlicesImpl1(ptr []byte) {
