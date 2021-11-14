@@ -48,12 +48,20 @@ jobs:
     runs-on: ubuntu-latest
     container: debian:11.1-slim
     steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: linux-binaries
+
       - name: try to debug
         run: |
           ls -al /__w/
           ls -al /__w/backups/
           ls -al /__w/backups/backups/
+          ls -al /__w/backups/backups/bin/
           exit 1
+
       - name: Setup dependency
         run: |
           apt-get -qq update \
