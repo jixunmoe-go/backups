@@ -58,8 +58,8 @@ jobs:
                 git \
             && rm -rf /var/lib/apt/lists/*
       - name: package to deb
+        working-directory: packaging/deb
         run: |
-          cd packaging/deb
           debuild  -uc -us -Zxz -z9 \
             --lintian-opts \
               --profile debian \
