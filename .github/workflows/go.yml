@@ -59,6 +59,7 @@ jobs:
             && rm -rf /var/lib/apt/lists/*
       - name: package to deb
         run: |
+          cd packaging/deb
           debuild  -uc -us -Zxz -z9 \
             --lintian-opts \
               --profile debian \
