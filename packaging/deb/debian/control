@@ -1,0 +1,14 @@
+Source: backup-cli
+Section: utils
+Priority: optional
+Maintainer: Jixun <jixun.moe@gmail.com>
+Standards-Version: 4.3.0
+Build-Depends: debhelper-compat (= 12)
+Rules-Requires-Root: no
+
+Package: backup-cli
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A Backup Utility Program.
+ .
+ A program that can be used to backup a stream of data or a single file.

@@ -1,0 +1,20 @@
+# debuild
+.debhelper/
+*.build
+*.buildinfo
+*.changes
+*.ddeb
+*.substvars
+*.deb
+*.dsc
+*.tar.xz
+
+# debian script temp files
+/deb/debian/debhelper*
+/deb/debian/files
+DEBIAN/
+bin/
+usr/
+
+# Copyright should be copied from LICENSE file at build time.
+/deb/debian/copyright

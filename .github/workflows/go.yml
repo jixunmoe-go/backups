@@ -45,3 +45,30 @@ jobs:
         with:
           name: linux-binaries
           path: bin/*-linux-*
+
+  package-deb:
+    name: Package (debian)
+    needs: build
+    runs-on: ubuntu-latest
+    container: debian:11.1-slim
+    steps:
+      - name: Setup dependency
+        run: |
+          apt-get -qq update \
+            && apt-get -yqq -o=Dpkg::Use-Pty=0 --no-install-recommends install \
+                build-essential \
+                debhelper-compat \
+                devscripts \
+                git \
+            && rm -rf /var/lib/apt/lists/*
+      - name: package to deb
+        run: |
+          debuild  -uc -us -Zxz -z9 \
+            --lintian-opts \
+              --profile debian \
+              --suppress-tags statically-linked-binary
+      - name: archive the deb package
+        uses: actions/upload-artifact@v2.1.4
+        with:
+          name: deb package
+          path: packaging/*.deb
