@@ -1,0 +1,5 @@
+backup-cli (0.0.1) unstable; urgency=low
+
+   * Initial release (as deb package)
+
+ -- Jixun <jixun.moe@gmail.com>  Sun, 14 Nov 2021 20:51:10 +0000
